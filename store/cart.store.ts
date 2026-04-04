@@ -1,6 +1,19 @@
 import { CartCustomization, CartStore } from "@/type";
 import { create } from "zustand";
 
+// 🔴 START: Cart store with location-based pricing
+// Description: Global cart state management using Zustand.
+// 
+// CART CALCULATIONS:
+// - Each item stored with its price (already location-adjusted when added)
+// - getTotalPrice() sums: (item.price + customization prices) * quantity
+// - The selected location affects the price at the time of adding to cart
+// - Once in cart, prices remain fixed until the user checks out
+//
+// CUSTOMIZATION HANDLING:
+// - Items can have customizations (add-ons) that affect the final price
+// - Customizations are compared by ID to group same item + same customizations together
+// - Increasing qty of identical item+customizations combo increments the quantity counter
 function areCustomizationsEqual(
   a: CartCustomization[] = [],
   b: CartCustomization[] = []

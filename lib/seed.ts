@@ -91,7 +91,7 @@ async function seed(): Promise<void> {
         name: item.name,
         description: item.description,
         image_url: uploadedImage,
-        price: item.prices.Isheri ?? Object.values(item.prices)[0],
+        price: item.prices["Isheri Berger"] ?? Object.values(item.prices)[0],
         rating: 4.5,
         calories: 0,
         protein: 0,

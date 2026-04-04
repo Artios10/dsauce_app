@@ -40,7 +40,7 @@ export default Sentry.wrap(function RootLayout() {
 
   useEffect(() => {
     fetchAuthenticatedUser()
-  }, []);
+  }, [fetchAuthenticatedUser]);
 
   if(!fontsLoaded || isLoading) return null;
 

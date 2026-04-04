@@ -2,9 +2,9 @@ import { Models } from "react-native-appwrite";
 import { ImageSourcePropType } from "react-native";
 
 export type LocationName =
-    | "Isheri"
+    | "Isheri Berger"
     | "Lekki"
-    | "Firstark"
+    | "First Tark"
     | "Akute"
     | "Arepo"
     | "Magoro";
@@ -20,6 +20,16 @@ export interface MenuItem extends Models.Document {
     prices: LocationPriceMap;
     image: ImageSourcePropType;
     image_url?: string;
+}
+
+export interface StaticMenuItem {
+    id: string;
+    name: string;
+    description: string;
+    category: "Shawarma" | "Main Dishes" | "Grills & Suya";
+    prices: LocationPriceMap;
+    image: ImageSourcePropType;
+    image_url: string;
 }
 
 export interface Category extends Models.Document {

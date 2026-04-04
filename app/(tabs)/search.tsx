@@ -11,6 +11,22 @@ import useLocationStore from "@/store/location.store";
 import { MENU_CATEGORIES, MENU_ITEMS } from "@/lib/data";
 import { MenuItem } from "@/type";
 
+// 🔴 START: Search and menu browsing screen
+// Description: Displays menu items with category filtering and search functionality.
+//
+// CATEGORY FILTERING LOGIC:
+// - Filter component renders tabs for each category: "All", "Shawarma", "Main Dishes", "Grills & Suya"
+// - activeCategory state tracks the currently selected category
+// - Items are filtered using useMemo for performance:
+//   * If "All" is selected, all items are shown
+//   * Otherwise, only items matching the selected category are shown
+// - Search query is combined with category filter (both must match)
+//
+// LOCATION-BASED PRICING:
+// - selectedLocation comes from global location store
+// - MenuCard component gets the location and retrieves the correct price
+// - If no location is selected, users see a warning before adding to cart
+
 const Search = () => {
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
   const [query, setQuery] = useState("");
@@ -18,6 +34,7 @@ const Search = () => {
 
   const categories = ["All", ...MENU_CATEGORIES];
 
+  // FILTERING LOGIC: Apply both category and search query filters
   const filteredData = useMemo(() => {
     return MENU_ITEMS.filter((item) => {
       const matchesCategory = activeCategory === "All" || item.category === activeCategory;

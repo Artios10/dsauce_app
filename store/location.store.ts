@@ -9,9 +9,9 @@ export type LocationState = {
 };
 
 export const LOCATIONS: LocationName[] = [
-  "Isheri",
+  "Isheri Berger",
   "Lekki",
-  "Firstark",
+  "First Tark",
   "Akute",
   "Arepo",
   "Magoro",

@@ -1,37 +1,67 @@
-import type { LocationName, MenuItem } from "@/type";
+import type { LocationName, StaticMenuItem } from "@/type";
 
 // 🔴 START: Location and menu data
 // Description: Static app menu with location-based pricing for every food item.
+// 
+// MENU UPDATES:
+// - Menu completely replaced with Nigerian food items across 3 categories
+// - All prices are in Naira (₦) and vary by location
+// - Each item includes: id, name, category, description, location-based prices, and image URLs
+// - Placeholder images are used (can be updated manually later)
+//
+// LOCATION-BASED PRICING:
+// The app supports 6 delivery locations. Each menu item has unique pricing per location:
+
 export const LOCATIONS: LocationName[] = [
-  "Isheri",
+  "Isheri Berger",
   "Lekki",
-  "Firstark",
+  "First Tark",
   "Akute",
   "Arepo",
   "Magoro",
 ];
 
-export const MENU_CATEGORIES: Array<MenuItem["category"]> = [
-  "Shawarma",
-  "Main Dishes",
-  "Grills & Suya",
+// CATEGORY LOGIC:
+// Three main food categories available for filtering in the search/menu screen.
+// Users can switch between categories using the Filter component (tabs).
+export const MENU_CATEGORIES: Array<"Shawarma" | "Main Dishes" | "Grills & Suya"> = [
+  "Shawarma",        // Shawarma sandwiches and wraps (6 items)
+  "Main Dishes",     // Rice-based main courses (7 items)
+  "Grills & Suya",   // Grilled meats and BBQ items (6 items)
 ];
 
-export const MENU_ITEMS: MenuItem[] = [
+// MENU ITEMS DATA STRUCTURE:
+// Each item contains:
+//   - id: Unique identifier for the item (string)
+//   - name: Display name of the food item
+//   - category: One of the three categories above
+//   - description: Short description of the item
+//   - prices: Object with location keys and Naira prices
+//     * Price varies by location to account for delivery costs and local demand
+//   - image: Local placeholder image (via require)
+//   - image_url: URL to placeholder image (can be replaced with real images later)
+//
+// Usage in cart:
+// When a user adds an item to cart, the app:
+//   1. Gets the user's selectedLocation from the location store
+//   2. Looks up prices[selectedLocation] to get the correct price
+//   3. Stores the item with that price in the cart
+//   4. When calculating totals, the correct location-based price is used
+export const MENU_ITEMS: StaticMenuItem[] = [
   {
     id: "1",
     name: "Shawarma Single Sausage",
     category: "Shawarma",
     description: "Tender shawarma with a single sausage, fresh vegetables, and signature sauce.",
     prices: {
-      Isheri: 3000,
+      "Isheri Berger": 3000,
       Lekki: 3500,
-      Firstark: 3200,
+      "First Tark": 3200,
       Akute: 3000,
       Arepo: 3100,
       Magoro: 3000,
     },
-    image: require("../assets/images/burger-one.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Shawarma+Single+Sausage",
   },
   {
@@ -40,14 +70,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Shawarma",
     description: "Two grilled sausages wrapped with veggies and sauces for double the flavor.",
     prices: {
-      Isheri: 3500,
+      "Isheri Berger": 3500,
       Lekki: 3800,
-      Firstark: 3600,
+      "First Tark": 3600,
       Akute: 3500,
       Arepo: 3600,
       Magoro: 3500,
     },
-    image: require("../assets/images/burger-two.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Double+Sausage+Shawarma",
   },
   {
@@ -56,14 +86,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Shawarma",
     description: "Loaded with extra chicken, fresh herbs, and our spicy sauce.",
     prices: {
-      Isheri: 4500,
+      "Isheri Berger": 4500,
       Lekki: 4700,
-      Firstark: 4600,
+      "First Tark": 4600,
       Akute: 4500,
       Arepo: 4600,
       Magoro: 4500,
     },
-    image: require("../assets/images/pizza-one.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Extra+Chicken+Shawarma",
   },
   {
@@ -72,14 +102,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Shawarma",
     description: "Our signature shawarma with special D’Sauce and premium fillings.",
     prices: {
-      Isheri: 5000,
+      "Isheri Berger": 5000,
       Lekki: 5200,
-      Firstark: 5100,
+      "First Tark": 5100,
       Akute: 5000,
       Arepo: 5100,
       Magoro: 5000,
     },
-    image: require("../assets/images/buritto.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Special+D%27Sauce+Shawarma",
   },
   {
@@ -88,14 +118,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Shawarma",
     description: "Crispy chopped protein wrapped with shawarma spices and veggies.",
     prices: {
-      Isheri: 3000,
+      "Isheri Berger": 3000,
       Lekki: 3200,
-      Firstark: 3100,
+      "First Tark": 3100,
       Akute: 3000,
       Arepo: 3050,
       Magoro: 3000,
     },
-    image: require("../assets/images/fries.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Chops",
   },
   {
@@ -104,14 +134,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Shawarma",
     description: "Spicy suya-flavored shawarma with juicy meat and crisp vegetables.",
     prices: {
-      Isheri: 6000,
+      "Isheri Berger": 6000,
       Lekki: 6200,
-      Firstark: 6100,
+      "First Tark": 6100,
       Akute: 6000,
       Arepo: 6100,
       Magoro: 6000,
     },
-    image: require("../assets/images/salad.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Suya+Shawarma",
   },
   {
@@ -120,14 +150,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Main Dishes",
     description: "Creamy stir fry pasta tossed with vegetables and house sauce.",
     prices: {
-      Isheri: 2500,
+      "Isheri Berger": 2500,
       Lekki: 2700,
-      Firstark: 2600,
+      "First Tark": 2600,
       Akute: 2500,
       Arepo: 2550,
       Magoro: 2500,
     },
-    image: require("../assets/images/cheese.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Stir+Fry+Pasta",
   },
   {
@@ -136,14 +166,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Main Dishes",
     description: "Rice served with tender suya, peppers, and spicy sauce.",
     prices: {
-      Isheri: 3000,
+      "Isheri Berger": 3000,
       Lekki: 3200,
-      Firstark: 3100,
+      "First Tark": 3100,
       Akute: 3000,
       Arepo: 3100,
       Magoro: 3000,
     },
-    image: require("../assets/images/burger-one.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Suya+Rice",
   },
   {
@@ -152,14 +182,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Main Dishes",
     description: "Peppery asun meat paired with fluffy rice and seasonings.",
     prices: {
-      Isheri: 3000,
+      "Isheri Berger": 3000,
       Lekki: 3200,
-      Firstark: 3100,
+      "First Tark": 3100,
       Akute: 3000,
       Arepo: 3100,
       Magoro: 3000,
     },
-    image: require("../assets/images/burger-two.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Asun+Rice",
   },
   {
@@ -168,14 +198,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Main Dishes",
     description: "Wok-fried rice with vegetables, chicken, and savory soy sauce.",
     prices: {
-      Isheri: 4000,
+      "Isheri Berger": 4000,
       Lekki: 4200,
-      Firstark: 4100,
+      "First Tark": 4100,
       Akute: 4000,
       Arepo: 4100,
       Magoro: 4000,
     },
-    image: require("../assets/images/burger-one.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Chinese+Rice",
   },
   {
@@ -184,14 +214,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Main Dishes",
     description: "Tropical rice with bold spices, plantain, and juicy protein.",
     prices: {
-      Isheri: 4000,
+      "Isheri Berger": 4000,
       Lekki: 4200,
-      Firstark: 4100,
+      "First Tark": 4100,
       Akute: 4000,
       Arepo: 4100,
       Magoro: 4000,
     },
-    image: require("../assets/images/pizza-one.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Caribbean+Rice",
   },
   {
@@ -200,14 +230,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Main Dishes",
     description: "Classic native rice with rich stew and garnish.",
     prices: {
-      Isheri: 3000,
+      "Isheri Berger": 3000,
       Lekki: 3200,
-      Firstark: 3100,
+      "First Tark": 3100,
       Akute: 3000,
       Arepo: 3100,
       Magoro: 3000,
     },
-    image: require("../assets/images/burger-two.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Native+Rice",
   },
   {
@@ -216,14 +246,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Main Dishes",
     description: "Flavorful smoky jollof rice served with pepped-up protein.",
     prices: {
-      Isheri: 3000,
+      "Isheri Berger": 3000,
       Lekki: 3200,
-      Firstark: 3100,
+      "First Tark": 3100,
       Akute: 3000,
       Arepo: 3100,
       Magoro: 3000,
     },
-    image: require("../assets/images/onion-rings.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Smoky+Jollof+Rice",
   },
   {
@@ -232,14 +262,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Grills & Suya",
     description: "Whole grilled chicken seasoned with suya spices and herbs.",
     prices: {
-      Isheri: 8000,
+      "Isheri Berger": 8000,
       Lekki: 8200,
-      Firstark: 8100,
+      "First Tark": 8100,
       Akute: 8000,
       Arepo: 8100,
       Magoro: 8000,
     },
-    image: require("../assets/images/burger-one.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Full+Chicken+Suya",
   },
   {
@@ -248,14 +278,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Grills & Suya",
     description: "Half roasted chicken with spicy suya glaze and peppers.",
     prices: {
-      Isheri: 4000,
+      "Isheri Berger": 4000,
       Lekki: 4200,
-      Firstark: 4100,
+      "First Tark": 4100,
       Akute: 4000,
       Arepo: 4100,
       Magoro: 4000,
     },
-    image: require("../assets/images/burger-two.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Half+Chicken+Suya",
   },
   {
@@ -264,14 +294,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Grills & Suya",
     description: "Smoky BBQ chicken available at a lower cost in some locations.",
     prices: {
-      Isheri: 2000,
+      "Isheri Berger": 2000,
       Lekki: 3000,
-      Firstark: 2500,
+      "First Tark": 2500,
       Akute: 2000,
       Arepo: 2600,
       Magoro: 2000,
     },
-    image: require("../assets/images/pizza-one.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=BBQ+Chicken",
   },
   {
@@ -280,14 +310,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Grills & Suya",
     description: "Roasted turkey with sweet and smoky barbecue flavors.",
     prices: {
-      Isheri: 6000,
+      "Isheri Berger": 6000,
       Lekki: 6200,
-      Firstark: 6100,
+      "First Tark": 6100,
       Akute: 6000,
       Arepo: 6100,
       Magoro: 6000,
     },
-    image: require("../assets/images/burger-one.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=BBQ+Turkey",
   },
   {
@@ -296,14 +326,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Grills & Suya",
     description: "Grilled croaker fish with BBQ spices, available in tiered pricing.",
     prices: {
-      Isheri: 12000,
+      "Isheri Berger": 12000,
       Lekki: 14000,
-      Firstark: 13000,
+      "First Tark": 13000,
       Akute: 12000,
       Arepo: 15000,
       Magoro: 12000,
     },
-    image: require("../assets/images/burger-two.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=BBQ+Croaker+Fish",
   },
   {
@@ -312,14 +342,14 @@ export const MENU_ITEMS: MenuItem[] = [
     category: "Grills & Suya",
     description: "Spicy asun meat with peppers, served hot and smoky.",
     prices: {
-      Isheri: 3000,
+      "Isheri Berger": 3000,
       Lekki: 3200,
-      Firstark: 3100,
+      "First Tark": 3100,
       Akute: 3000,
       Arepo: 3100,
       Magoro: 3000,
     },
-    image: require("../assets/images/mushrooms.png"),
+    image: require("../assets/images/empty-state.png"),
     image_url: "https://via.placeholder.com/720x720.png?text=Asun+Meat",
   },
 ];

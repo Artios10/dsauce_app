@@ -5,7 +5,7 @@ import cn from "clsx";
 
 import CartButton from "@/components/CartButton";
 import LocationSelector from "@/components/LocationSelector";
-import { images, offers } from "@/constants";
+import { images, CATEGORIES } from "@/constants";
 import useLocationStore from "@/store/location.store";
 
 export default function Index() {
@@ -14,7 +14,7 @@ export default function Index() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <FlatList
-        data={offers}
+        data={CATEGORIES.slice(1)}
         renderItem={({ item, index }) => {
           const isEven = index % 2 === 0;
 
@@ -22,17 +22,17 @@ export default function Index() {
             <View>
               <Pressable
                 className={cn("offer-card", isEven ? "flex-row-reverse" : "flex-row")}
-                style={{ backgroundColor: item.color }}
+                style={{ backgroundColor: "#D33B0D" }}
                 android_ripple={{ color: "#fffff22" }}
               >
                 {({ pressed }) => (
                   <Fragment>
                     <View className={"h-full w-1/2"}>
-                      <Image source={item.image} className={"size-full"} resizeMode={"contain"} />
+                      <Image source={images.emptyState} className={"size-full"} resizeMode={"contain"} />
                     </View>
 
                     <View className={cn("offer-card__info", isEven ? "pl-10" : "pr-10")}>
-                      <Text className="h1-bold text-white leading-tight">{item.title}</Text>
+                      <Text className="h1-bold text-white leading-tight">{item.name}</Text>
                       <Image
                         source={images.arrowRight}
                         className="size-10"
