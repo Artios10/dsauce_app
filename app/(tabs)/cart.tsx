@@ -6,6 +6,7 @@ import CustomHeader from "@/components/CustomHeader";
 import cn from "clsx";
 import CustomButton from "@/components/CustomButton";
 import CartItem from "@/components/CartItem";
+import { PaymentInfoStripeProps } from "@/type";
 
 const PaymentInfoStripe = ({
   label,
@@ -20,11 +21,13 @@ const PaymentInfoStripe = ({
 );
 
 const Cart = () => {
-  const { items, getTotalItems, getTotalPrice } = useCartStore();
+  const { items, getTotalItems, getTotalPrice, getTotalPlatform, getTotalVendor } = useCartStore();
   const selectedLocation = useLocationStore((state) => state.selectedLocation);
 
   const totalItems = getTotalItems();
   const totalPrice = getTotalPrice();
+  const totalPlatform = getTotalPlatform();
+  const totalVendor = getTotalVendor();
 
   return (
     <SafeAreaView className="bg-white h-full">
@@ -45,8 +48,12 @@ const Cart = () => {
                 </Text>
 
                 <PaymentInfoStripe
-                  label={`Total Items (${totalItems})`}
+                  label={`Items Subtotal (${totalItems})`}
                   value={`₦${totalPrice.toFixed(0)}`}
+                />
+                <PaymentInfoStripe
+                  label={`Platform Fee`}
+                  value={`₦${totalPlatform.toFixed(0)}`}
                 />
                 <PaymentInfoStripe label={`Delivery Fee`} value={`₦500`} />
                 <PaymentInfoStripe
@@ -56,10 +63,16 @@ const Cart = () => {
                 />
                 <View className="border-t border-gray-300 my-2" />
                 <PaymentInfoStripe
-                  label={`Total`}
+                  label={`Total Paid by Customer`}
                   value={`₦${(totalPrice + 500).toFixed(0)}`}
                   labelStyle="base-bold !text-dark-100"
                   valueStyle="base-bold !text-dark-100 !text-right"
+                />
+                <PaymentInfoStripe
+                  label={`Vendor Receives`}
+                  value={`₦${totalVendor.toFixed(0)}`}
+                  labelStyle="paragraph-medium text-gray-200"
+                  valueStyle="paragraph-bold text-success"
                 />
               </View>
 

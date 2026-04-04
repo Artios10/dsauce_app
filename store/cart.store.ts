@@ -1,19 +1,29 @@
 import { CartCustomization, CartStore } from "@/type";
 import { create } from "zustand";
 
-// 🔴 START: Cart store with location-based pricing
+// 🔴 START: Cart store with location-based pricing and platform fee deduction
 // Description: Global cart state management using Zustand.
 // 
 // CART CALCULATIONS:
 // - Each item stored with its price (already location-adjusted when added)
-// - getTotalPrice() sums: (item.price + customization prices) * quantity
+// - Platform fee of ₦500 is deducted from each item for vendor earnings
+// - getTotalPrice() sums: (item.price + customization prices) * quantity (customer total)
+// - getTotalCustomer() = getTotalPrice() (same as above)
+// - getTotalPlatform() = sum of platform fees * quantity
+// - getTotalVendor() = sum of vendor earnings * quantity
 // - The selected location affects the price at the time of adding to cart
 // - Once in cart, prices remain fixed until the user checks out
+//
+// PLATFORM FEE LOGIC:
+// - PLATFORM_FEE = 500 (₦500 per item)
+// - When adding item: platformFee = PLATFORM_FEE, vendorEarnings = price - PLATFORM_FEE
+// - Fees are calculated per item, not per quantity (but multiplied in totals)
 //
 // CUSTOMIZATION HANDLING:
 // - Items can have customizations (add-ons) that affect the final price
 // - Customizations are compared by ID to group same item + same customizations together
 // - Increasing qty of identical item+customizations combo increments the quantity counter
+const PLATFORM_FEE = 500;
 function areCustomizationsEqual(
   a: CartCustomization[] = [],
   b: CartCustomization[] = []
@@ -31,6 +41,9 @@ export const useCartStore = create<CartStore>((set, get) => ({
 
   addItem: (item) => {
     const customizations = item.customizations ?? [];
+    // Calculate platform fee and vendor earnings per item
+    const platformFee = PLATFORM_FEE;
+    const vendorEarnings = item.price - PLATFORM_FEE;
 
     const existing = get().items.find(
       (i) =>
@@ -51,7 +64,7 @@ export const useCartStore = create<CartStore>((set, get) => ({
       });
     } else {
       set({
-        items: [...get().items, { ...item, quantity: 1, customizations }],
+        items: [...get().items, { ...item, quantity: 1, customizations, platformFee, vendorEarnings }],
       });
     }
   },
@@ -106,5 +119,20 @@ export const useCartStore = create<CartStore>((set, get) => ({
           0
         ) ?? 0;
       return total + item.quantity * (base + customPrice);
+    }, 0),
+
+  // Total amount customer pays (same as getTotalPrice)
+  getTotalCustomer: () => get().getTotalPrice(),
+
+  // Total platform fees collected
+  getTotalPlatform: () =>
+    get().items.reduce((total, item) => {
+      return total + item.quantity * item.platformFee;
+    }, 0),
+
+  // Total vendor earnings
+  getTotalVendor: () =>
+    get().items.reduce((total, item) => {
+      return total + item.quantity * item.vendorEarnings;
     }, 0),
 }));

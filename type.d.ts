@@ -58,17 +58,22 @@ export interface CartItemType {
     image: ImageSourcePropType;
     quantity: number;
     customizations?: CartCustomization[];
+    platformFee: number; // ₦500 platform fee per item
+    vendorEarnings: number; // price - platformFee
 }
 
 export interface CartStore {
     items: CartItemType[];
-    addItem: (item: Omit<CartItemType, "quantity">) => void;
+    addItem: (item: Omit<CartItemType, "quantity" | "platformFee" | "vendorEarnings">) => void;
     removeItem: (id: string, customizations: CartCustomization[]) => void;
     increaseQty: (id: string, customizations: CartCustomization[]) => void;
     decreaseQty: (id: string, customizations: CartCustomization[]) => void;
     clearCart: () => void;
     getTotalItems: () => number;
     getTotalPrice: () => number;
+    getTotalCustomer: () => number; // sum of all item prices (customer pays)
+    getTotalPlatform: () => number; // sum of all platform fees
+    getTotalVendor: () => number; // sum of all vendor earnings
 }
 
 interface TabBarIconProps {
@@ -77,7 +82,7 @@ interface TabBarIconProps {
     title: string;
 }
 
-interface PaymentInfoStripeProps {
+export interface PaymentInfoStripeProps {
     label: string;
     value: string;
     labelStyle?: string;
