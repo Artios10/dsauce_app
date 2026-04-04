@@ -1,14 +1,25 @@
 import { Models } from "react-native-appwrite";
+import { ImageSourcePropType } from "react-native";
+
+export type LocationName =
+    | "Isheri"
+    | "Lekki"
+    | "Firstark"
+    | "Akute"
+    | "Arepo"
+    | "Magoro";
+
+export type LocationPriceMap = Record<LocationName, number>;
 
 export interface MenuItem extends Models.Document {
+    $id?: string;
+    id: string;
     name: string;
-    price: number;
-    image_url: string;
     description: string;
-    calories: number;
-    protein: number;
-    rating: number;
-    type: string;
+    category: "Shawarma" | "Main Dishes" | "Grills & Suya";
+    prices: LocationPriceMap;
+    image: ImageSourcePropType;
+    image_url?: string;
 }
 
 export interface Category extends Models.Document {
@@ -33,7 +44,8 @@ export interface CartItemType {
     id: string; // menu item id
     name: string;
     price: number;
-    image_url: string;
+    selectedLocation: LocationName;
+    image: ImageSourcePropType;
     quantity: number;
     customizations?: CartCustomization[];
 }

@@ -1,66 +1,61 @@
 import { useCartStore } from "@/store/cart.store";
 import { CartItemType } from "@/type";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import {images} from "@/constants";
+import { images } from "@/constants";
 
 const CartItem = ({ item }: { item: CartItemType }) => {
-    const { increaseQty, decreaseQty, removeItem } = useCartStore();
+  const { increaseQty, decreaseQty, removeItem } = useCartStore();
 
-    return (
-        <View className="cart-item">
-            <View className="flex flex-row items-center gap-x-3">
-                <View className="cart-item__image">
-                    <Image
-                        source={{ uri: item.image_url }}
-                        className="size-4/5 rounded-lg"
-                        resizeMode="cover"
-                    />
-                </View>
+  return (
+    <View className="cart-item">
+      <View className="flex flex-row items-center gap-x-3">
+        <View className="cart-item__image">
+          <Image source={item.image} className="size-4/5 rounded-lg" resizeMode="cover" />
+        </View>
 
-                <View>
-                    <Text className="base-bold text-dark-100">{item.name}</Text>
-                    <Text className="paragraph-bold text-primary mt-1">
-                        ${item.price}
-                    </Text>
+        <View>
+          <Text className="base-bold text-dark-100">{item.name}</Text>
+          <Text className="paragraph-medium text-gray-200">Location: {item.selectedLocation}</Text>
+          <Text className="paragraph-bold text-primary mt-1">₦{item.price}</Text>
 
-                    <View className="flex flex-row items-center gap-x-4 mt-2">
-                        <TouchableOpacity
-                            onPress={() => decreaseQty(item.id, item.customizations!)}
-                            className="cart-item__actions"
-                        >
-                            <Image
-                                source={images.minus}
-                                className="size-1/2"
-                                resizeMode="contain"
-                                tintColor={"#FF9C01"}
-                            />
-                        </TouchableOpacity>
+          <View className="flex flex-row items-center gap-x-4 mt-2">
+            <TouchableOpacity
+              onPress={() => decreaseQty(item.id, item.customizations ?? [])}
+              className="cart-item__actions"
+            >
+              <Image
+                source={images.minus}
+                className="size-1/2"
+                resizeMode="contain"
+                tintColor="#FF3B30"
+              />
+            </TouchableOpacity>
 
-                        <Text className="base-bold text-dark-100">{item.quantity}</Text>
-
-                        <TouchableOpacity
-                            onPress={() => increaseQty(item.id, item.customizations!)}
-                            className="cart-item__actions"
-                        >
-                            <Image
-                                source={images.plus}
-                                className="size-1/2"
-                                resizeMode="contain"
-                                tintColor={"#FF9C01"}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
+            <Text className="base-bold text-dark-100">{item.quantity}</Text>
 
             <TouchableOpacity
-                onPress={() => removeItem(item.id, item.customizations!)}
-                className="flex-center"
+              onPress={() => increaseQty(item.id, item.customizations ?? [])}
+              className="cart-item__actions"
             >
-                <Image source={images.trash} className="size-5" resizeMode="contain" />
+              <Image
+                source={images.plus}
+                className="size-1/2"
+                resizeMode="contain"
+                tintColor="#FF3B30"
+              />
             </TouchableOpacity>
+          </View>
         </View>
-    );
+      </View>
+
+      <TouchableOpacity
+        onPress={() => removeItem(item.id, item.customizations ?? [])}
+        className="flex-center"
+      >
+        <Image source={images.trash} className="size-5" resizeMode="contain" />
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 export default CartItem;
