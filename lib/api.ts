@@ -1,6 +1,8 @@
 import { CreateUserParams, SignInParams, User } from "@/type";
+import * as SecureStore from "expo-secure-store";
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const AUTH_TOKENS_KEY = "dsauce_auth_tokens";
 
 type AuthTokens = {
   access: string;
@@ -8,6 +10,31 @@ type AuthTokens = {
 };
 
 let authTokens: AuthTokens | null = null;
+let tokensHydrated = false;
+
+const persistTokens = async (tokens: AuthTokens | null) => {
+  if (tokens) {
+    await SecureStore.setItemAsync(AUTH_TOKENS_KEY, JSON.stringify(tokens));
+    return;
+  }
+
+  await SecureStore.deleteItemAsync(AUTH_TOKENS_KEY);
+};
+
+const ensureTokensLoaded = async () => {
+  if (tokensHydrated) return;
+
+  const storedValue = await SecureStore.getItemAsync(AUTH_TOKENS_KEY);
+  if (storedValue) {
+    try {
+      authTokens = JSON.parse(storedValue) as AuthTokens;
+    } catch {
+      authTokens = null;
+    }
+  }
+
+  tokensHydrated = true;
+};
 
 const getErrorMessage = async (response: Response) => {
   let payload: unknown;
@@ -30,6 +57,7 @@ const getErrorMessage = async (response: Response) => {
 };
 
 const refreshAccessToken = async () => {
+  await ensureTokensLoaded();
   if (!authTokens?.refresh) return null;
 
   const response = await fetch(`${API_BASE_URL}/api/auth/refresh/`, {
@@ -40,16 +68,19 @@ const refreshAccessToken = async () => {
 
   if (!response.ok) {
     authTokens = null;
+    await persistTokens(null);
     return null;
   }
 
   const data = (await response.json()) as { access: string };
   authTokens = { ...authTokens, access: data.access };
+  await persistTokens(authTokens);
   return data.access;
 };
 
 const authenticatedFetch = async (path: string, init?: RequestInit) => {
-  if (!authTokens?.access) throw new Error("Please sign in first.");
+  await ensureTokensLoaded();
+  if (!authTokens?.access) throw new Error("Authentication required.");
 
   const request = async (token: string) =>
     fetch(`${API_BASE_URL}${path}`, {
@@ -99,6 +130,7 @@ export const signIn = async ({ email, password }: SignInParams) => {
   if (!response.ok) throw new Error(await getErrorMessage(response));
 
   authTokens = (await response.json()) as AuthTokens;
+  await persistTokens(authTokens);
 };
 
 export const getCurrentUser = async () => {
@@ -107,8 +139,11 @@ export const getCurrentUser = async () => {
 };
 
 export const logout = async () => {
+  await ensureTokensLoaded();
+
   if (!authTokens?.refresh) {
     authTokens = null;
+    await persistTokens(null);
     return;
   }
 
@@ -120,5 +155,6 @@ export const logout = async () => {
     });
   } finally {
     authTokens = null;
+    await persistTokens(null);
   }
 };

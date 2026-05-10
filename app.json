@@ -41,7 +41,8 @@
           "project": "jsm_reactnative_food-ordering",
           "organization": "jsmpro"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
