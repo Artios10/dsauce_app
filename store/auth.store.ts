@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import {User} from "@/type";
-import {getCurrentUser} from "@/lib/appwrite";
+import { getCurrentUser, logout } from "@/lib/api";
 
 type AuthState = {
     isAuthenticated: boolean;
@@ -10,6 +10,7 @@ type AuthState = {
     setIsAuthenticated: (value: boolean) => void;
     setUser: (user: User | null) => void;
     setLoading: (loading: boolean) => void;
+    signOut: () => Promise<void>;
 
     fetchAuthenticatedUser: () => Promise<void>;
 }
@@ -22,6 +23,10 @@ const useAuthStore = create<AuthState>((set) => ({
     setIsAuthenticated: (value) => set({ isAuthenticated: value }),
     setUser: (user) => set({ user }),
     setLoading: (value) => set({isLoading: value}),
+    signOut: async () => {
+        await logout();
+        set({ isAuthenticated: false, user: null });
+    },
 
     fetchAuthenticatedUser: async () => {
         set({isLoading: true});

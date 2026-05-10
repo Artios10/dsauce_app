@@ -119,6 +119,7 @@ Create a new file named `.env` in the root of your project and add the following
 ```env
 EXPO_PUBLIC_APPWRITE_PROJECT_ID=
 EXPO_PUBLIC_APPWRITE_ENDPOINT=
+EXPO_PUBLIC_API_BASE_URL=http://localhost:8000
 ```
 
 Replace the placeholder values with your actual credentials by signing up on the **[Appwrite](https://jsm.dev/rn25-appwrite)** dashboard.
