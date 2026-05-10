@@ -1,8 +1,12 @@
+import logging
+
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from redis.exceptions import RedisError
 
 from apps.notifications.models import Notification
+
+logger = logging.getLogger(__name__)
 
 
 def create_notification(recipient, actor, notification_type, title, message, metadata=None):
@@ -33,5 +37,5 @@ def create_notification(recipient, actor, notification_type, title, message, met
                 },
             )
         except RedisError:
-            pass
+            logger.warning('Redis unavailable. Skipping websocket notification delivery.', exc_info=True)
     return notification

@@ -6,7 +6,8 @@ from django.utils import timezone
 from apps.authentication.models import User, UserRole
 from apps.courses.models import Assignment, Course, CourseEnrollment, LectureMaterial
 from apps.friendships.models import FriendRequest, FriendRequestStatus, Friendship
-from apps.messaging.models import Conversation, ConversationParticipant, Message
+from apps.messaging.models import Message
+from apps.messaging.services import get_or_create_conversation
 from apps.notifications.models import Notification
 from apps.posts.models import Comment, Post, PostLike
 
@@ -43,9 +44,7 @@ class Command(BaseCommand):
         CourseEnrollment.objects.get_or_create(course=course, student=student)
         assignment, _ = Assignment.objects.get_or_create(course=course, title='API Basics', defaults={'created_by': lecturer, 'description': 'Build CRUD APIs', 'due_date': timezone.now() + timedelta(days=7)})
 
-        conversation, _ = Conversation.objects.get_or_create()
-        ConversationParticipant.objects.get_or_create(conversation=conversation, user=normal)
-        ConversationParticipant.objects.get_or_create(conversation=conversation, user=student)
+        conversation, _ = get_or_create_conversation(normal, [student.id])
         Message.objects.get_or_create(conversation=conversation, sender=normal, content='Hello from seed data!')
 
         Notification.objects.get_or_create(

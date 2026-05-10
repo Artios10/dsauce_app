@@ -1,6 +1,5 @@
 import json
 
-from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
@@ -39,7 +38,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 },
             )
         elif action == 'message':
-            message = await self._create_message(payload.get('content', ''), payload.get('attachment'))
+            message = await self._create_message(payload.get('content', ''))
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
@@ -59,7 +58,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return Conversation.objects.filter(id=conversation_id, participants__id=user_id).exists()
 
     @database_sync_to_async
-    def _create_message(self, content, attachment=None):
+    def _create_message(self, content):
         conversation = Conversation.objects.get(id=self.conversation_id)
         message = Message.objects.create(conversation=conversation, sender=self.scope['user'], content=content)
         for participant in conversation.participants.exclude(id=self.scope['user'].id):

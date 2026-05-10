@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from apps.friendships.models import FriendRequest, FriendRequestStatus, Friendship
 from apps.friendships.serializers import FriendListSerializer, FriendRequestSerializer, MutualFriendSerializer, SendRequestSerializer
-from apps.friendships.services import accept_request, reject_request, remove_friend, send_request
+from apps.friendships.services import accept_request, get_friend_id_set, reject_request, remove_friend, send_request
 
 User = get_user_model()
 
@@ -65,17 +65,8 @@ class FriendRequestViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         if not target:
             return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        current_friend_ids = set()
-        target_friend_ids = set()
-
-        for requester_id, receiver_id in Friendship.objects.filter(Q(requester=request.user) | Q(receiver=request.user)).values_list('requester_id', 'receiver_id'):
-            current_friend_ids.update([requester_id, receiver_id])
-        current_friend_ids.discard(request.user.id)
-
-        for requester_id, receiver_id in Friendship.objects.filter(Q(requester=target) | Q(receiver=target)).values_list('requester_id', 'receiver_id'):
-            target_friend_ids.update([requester_id, receiver_id])
-        target_friend_ids.discard(target.id)
-
+        current_friend_ids = get_friend_id_set(request.user)
+        target_friend_ids = get_friend_id_set(target)
         mutual_ids = current_friend_ids.intersection(target_friend_ids)
         users = User.objects.filter(id__in=mutual_ids)
         return Response(MutualFriendSerializer(users, many=True).data, status=status.HTTP_200_OK)

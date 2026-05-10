@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -10,7 +11,11 @@ from apps.posts.services import feed_queryset, toggle_post_like
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Post.objects.select_related('user').prefetch_related('likes', 'comments').all()
+    queryset = (
+        Post.objects.select_related('user')
+        .prefetch_related('likes', 'comments')
+        .annotate(likes_count=Count('likes', distinct=True), comments_count=Count('comments', distinct=True))
+    )
     filterset_fields = ['user']
     search_fields = ['content', 'user__username']
     ordering_fields = ['created_at', 'updated_at']

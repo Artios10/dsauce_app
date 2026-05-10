@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Case, F, IntegerField, Q, When
 from django.utils import timezone
 
 from apps.friendships.models import FriendRequest, FriendRequestStatus, Friendship
@@ -40,3 +40,17 @@ def remove_friend(user, friend_id):
 
 def friend_ids(user):
     return Friendship.objects.filter(Q(requester=user) | Q(receiver=user)).values_list('requester_id', 'receiver_id')
+
+
+def get_friend_id_set(user):
+    return set(
+        Friendship.objects.filter(Q(requester=user) | Q(receiver=user))
+        .annotate(
+            friend_id=Case(
+                When(requester=user, then=F('receiver_id')),
+                default=F('requester_id'),
+                output_field=IntegerField(),
+            )
+        )
+        .values_list('friend_id', flat=True)
+    )

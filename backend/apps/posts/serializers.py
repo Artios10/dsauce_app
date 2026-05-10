@@ -5,8 +5,8 @@ from apps.posts.models import Comment, Post, PostLike
 
 class PostSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
-    likes_count = serializers.IntegerField(source='likes.count', read_only=True)
-    comments_count = serializers.IntegerField(source='comments.count', read_only=True)
+    likes_count = serializers.IntegerField(read_only=True)
+    comments_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Post
