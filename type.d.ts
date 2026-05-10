@@ -37,10 +37,16 @@ export interface Category extends Models.Document {
     description: string;
 }
 
-export interface User extends Models.Document {
-    name: string;
+export interface User {
+    id: number;
+    username: string;
     email: string;
-    avatar: string;
+    profile_picture: string | null;
+    bio: string;
+    role: string;
+    is_verified: boolean;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface CartCustomization {
@@ -76,7 +82,7 @@ export interface CartStore {
     getTotalVendor: () => number; // sum of all vendor earnings
 }
 
-interface TabBarIconProps {
+export interface TabBarIconProps {
     focused: boolean;
     icon: ImageSourcePropType;
     title: string;
@@ -89,7 +95,7 @@ export interface PaymentInfoStripeProps {
     valueStyle?: string;
 }
 
-interface CustomButtonProps {
+export interface CustomButtonProps {
     onPress?: () => void;
     title?: string;
     style?: string;
@@ -98,11 +104,11 @@ interface CustomButtonProps {
     isLoading?: boolean;
 }
 
-interface CustomHeaderProps {
+export interface CustomHeaderProps {
     title?: string;
 }
 
-interface CustomInputProps {
+export interface CustomInputProps {
     placeholder?: string;
     value?: string;
     onChangeText?: (text: string) => void;
@@ -111,24 +117,24 @@ interface CustomInputProps {
     keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
 }
 
-interface ProfileFieldProps {
+export interface ProfileFieldProps {
     label: string;
     value: string;
     icon: ImageSourcePropType;
 }
 
-interface CreateUserPrams {
+export interface CreateUserParams {
     email: string;
     password: string;
     name: string;
 }
 
-interface SignInParams {
+export interface SignInParams {
     email: string;
     password: string;
 }
 
-interface GetMenuParams {
+export interface GetMenuParams {
     category: string;
     query: string;
 }
