@@ -7,9 +7,8 @@ from apps.authentication.managers import UserManager
 
 class UserRole(models.TextChoices):
     ADMIN = 'admin', 'Admin'
-    LECTURER = 'lecturer', 'Lecturer'
-    STUDENT = 'student', 'Student'
-    NORMAL_USER = 'normal_user', 'Normal User'
+    MERCHANT = 'merchant', 'Merchant'
+    CUSTOMER = 'customer', 'Customer'
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -17,7 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
     bio = models.TextField(blank=True)
-    role = models.CharField(max_length=20, choices=UserRole.choices, default=UserRole.NORMAL_USER)
+    role = models.CharField(max_length=20, choices=UserRole.choices, default=UserRole.CUSTOMER)
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

@@ -8,7 +8,7 @@ const Profile = () => {
   const { user, signOut } = useAuthStore();
 
   const username = user?.username || "User";
-  const role = user?.role ? user.role.replaceAll("_", " ") : "normal user";
+  const role = user?.role ? user.role.replaceAll("_", " ") : "customer";
   const bio = user?.bio || "No bio yet";
 
   return (

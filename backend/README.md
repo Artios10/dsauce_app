@@ -61,9 +61,14 @@ python manage.py seed_sample_data
 ```
 Sample users created:
 - `admin@dsauce.app / AdminPass123!`
-- `lecturer@dsauce.app / LecturerPass123!`
-- `student@dsauce.app / StudentPass123!`
-- `user@dsauce.app / UserPass123!`
+- `merchant@dsauce.app / MerchantPass123!`
+- `customer@dsauce.app / CustomerPass123!`
+
+## Seed Initial Admin
+Set `ADMIN_SEED_EMAIL`, `ADMIN_SEED_USERNAME`, and `ADMIN_SEED_PASSWORD` in `.env`, then run:
+```bash
+python manage.py seed_admin
+```
 
 ## API Documentation (Core Endpoints)
 Base URL: `/api`
@@ -128,7 +133,7 @@ Base URL: `/api`
   "username": "john",
   "email": "john@example.com",
   "password": "StrongPass123!",
-  "role": "student"
+  "role": "customer"
 }
 ```
 Response `201 Created`
@@ -139,7 +144,7 @@ Response `201 Created`
   "email": "john@example.com",
   "profile_picture": null,
   "bio": "",
-  "role": "student",
+  "role": "customer",
   "is_verified": false,
   "created_at": "2026-05-10T10:00:00Z",
   "updated_at": "2026-05-10T10:00:00Z"

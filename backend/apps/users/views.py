@@ -3,24 +3,40 @@ from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from apps.users.permissions import IsSelfOrReadOnly
-from apps.users.serializers import UserProfileSerializer, UserSearchSerializer
+from apps.users.permissions import IsAdminOrSelf, IsAdminUserRole
+from apps.users.serializers import AdminUserSerializer, UserProfileSerializer, UserSearchSerializer
 from apps.users.services import user_suggestions_for
 
 User = get_user_model()
 
 
-class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class UserViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = User.objects.all().order_by('-created_at')
     serializer_class = UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticated, IsSelfOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     search_fields = ['username', 'email', 'bio']
     ordering_fields = ['created_at', 'username']
 
     def get_serializer_class(self):
         if self.action == 'list':
             return UserSearchSerializer
+        if self.action in ('create', 'update', 'partial_update', 'retrieve') and getattr(self.request.user, 'role', None) == 'admin':
+            return AdminUserSerializer
         return super().get_serializer_class()
+
+    def get_permissions(self):
+        if self.action in ('list', 'create', 'destroy'):
+            return [permissions.IsAuthenticated(), IsAdminUserRole()]
+        if self.action in ('retrieve', 'update', 'partial_update'):
+            return [permissions.IsAuthenticated(), IsAdminOrSelf()]
+        return super().get_permissions()
 
     @action(detail=False, methods=['get'])
     def me(self, request):

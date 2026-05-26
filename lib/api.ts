@@ -104,7 +104,7 @@ const authenticatedFetch = async (path: string, init?: RequestInit) => {
   return response;
 };
 
-export const createUser = async ({ email, password, name }: CreateUserParams) => {
+export const createUser = async ({ email, password, name, role }: CreateUserParams) => {
   const registerResponse = await fetch(`${API_BASE_URL}/api/auth/register/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -112,6 +112,7 @@ export const createUser = async ({ email, password, name }: CreateUserParams) =>
       email,
       password,
       username: name,
+      role,
     }),
   });
 
@@ -136,6 +137,56 @@ export const signIn = async ({ email, password }: SignInParams) => {
 export const getCurrentUser = async () => {
   const response = await authenticatedFetch("/api/auth/me/");
   return (await response.json()) as User;
+};
+
+export const getUsers = async () => {
+  const response = await authenticatedFetch("/api/users/");
+  const payload = (await response.json()) as { results?: User[] } | User[];
+  if (Array.isArray(payload)) return payload;
+  return payload.results ?? [];
+};
+
+export const getUser = async (id: number) => {
+  const response = await authenticatedFetch(`/api/users/${id}/`);
+  return (await response.json()) as User;
+};
+
+export const createUserAdmin = async (payload: {
+  username: string;
+  email: string;
+  password: string;
+  role: string;
+  is_verified?: boolean;
+  is_active?: boolean;
+  is_staff?: boolean;
+}) => {
+  const response = await authenticatedFetch("/api/users/", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  return (await response.json()) as User;
+};
+
+export const updateUser = async (id: number, payload: Partial<{
+  username: string;
+  email: string;
+  password: string;
+  role: string;
+  is_verified: boolean;
+  is_active: boolean;
+  is_staff: boolean;
+}>) => {
+  const response = await authenticatedFetch(`/api/users/${id}/`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+  return (await response.json()) as User;
+};
+
+export const deleteUser = async (id: number) => {
+  await authenticatedFetch(`/api/users/${id}/`, {
+    method: "DELETE",
+  });
 };
 
 export const logout = async () => {

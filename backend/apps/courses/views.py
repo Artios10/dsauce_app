@@ -21,8 +21,8 @@ class CourseViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at', 'title']
 
     def perform_create(self, serializer):
-        if self.request.user.role not in ('lecturer', 'admin'):
-            raise permissions.PermissionDenied('Only lecturers can create courses.')
+        if self.request.user.role not in ('merchant', 'admin'):
+            raise permissions.PermissionDenied('Only merchants can create courses.')
         serializer.save(lecturer=self.request.user)
 
 
@@ -43,8 +43,8 @@ class LectureMaterialViewSet(viewsets.ModelViewSet):
     filterset_fields = ['course']
 
     def perform_create(self, serializer):
-        if self.request.user.role not in ('lecturer', 'admin'):
-            raise permissions.PermissionDenied('Only lecturers can upload materials.')
+        if self.request.user.role not in ('merchant', 'admin'):
+            raise permissions.PermissionDenied('Only merchants can upload materials.')
         serializer.save(uploaded_by=self.request.user)
 
 
@@ -56,8 +56,8 @@ class AssignmentViewSet(viewsets.ModelViewSet):
     search_fields = ['title', 'description']
 
     def perform_create(self, serializer):
-        if self.request.user.role not in ('lecturer', 'admin'):
-            raise permissions.PermissionDenied('Only lecturers can create assignments.')
+        if self.request.user.role not in ('merchant', 'admin'):
+            raise permissions.PermissionDenied('Only merchants can create assignments.')
         serializer.save(created_by=self.request.user)
 
 
