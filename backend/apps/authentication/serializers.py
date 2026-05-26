@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.authentication.models import EmailVerificationToken, PasswordResetToken, User
+from apps.authentication.models import EmailVerificationToken, PasswordResetToken, User, UserRole
 from apps.authentication.services import generate_email_verification_token
 
 
@@ -29,6 +29,12 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password', 'role']
+        extra_kwargs = {'role': {'required': False}}
+
+    def validate_role(self, value):
+        if value not in (UserRole.MERCHANT, UserRole.CUSTOMER):
+            raise serializers.ValidationError('Role must be merchant or customer.')
+        return value
 
     def create(self, validated_data):
         password = validated_data.pop('password')

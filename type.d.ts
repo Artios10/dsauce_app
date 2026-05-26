@@ -43,11 +43,15 @@ export interface User {
     email: string;
     profile_picture: string | null;
     bio: string;
-    role: string;
+    role: UserRole;
     is_verified: boolean;
+    is_active?: boolean;
+    is_staff?: boolean;
     created_at: string;
     updated_at: string;
 }
+
+export type UserRole = "admin" | "merchant" | "customer";
 
 export interface CartCustomization {
     id: string;
@@ -127,6 +131,7 @@ export interface CreateUserParams {
     email: string;
     password: string;
     name: string;
+    role?: UserRole;
 }
 
 export interface SignInParams {

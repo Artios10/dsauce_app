@@ -5,10 +5,11 @@ import CustomButton from "@/components/CustomButton";
 import {useState} from "react";
 import { createUser } from "@/lib/api";
 import useAuthStore from "@/store/auth.store";
+import RoleSelector from "@/components/RoleSelector";
 
 const SignUp = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [form, setForm] = useState({ name: '', email: '', password: '' });
+    const [form, setForm] = useState({ name: '', email: '', password: '', role: 'customer' });
     const fetchAuthenticatedUser = useAuthStore((state) => state.fetchAuthenticatedUser);
 
     const submit = async () => {
@@ -19,7 +20,7 @@ const SignUp = () => {
         setIsSubmitting(true)
 
         try {
-            await createUser({ email,  password,  name });
+            await createUser({ email,  password,  name, role: form.role });
             await fetchAuthenticatedUser();
 
             router.replace('/');
@@ -51,6 +52,15 @@ const SignUp = () => {
                 onChangeText={(text) => setForm((prev) => ({ ...prev, password: text }))}
                 label="Password"
                 secureTextEntry={true}
+            />
+            <RoleSelector
+                label="Role"
+                value={form.role}
+                options={[
+                    { label: "Customer", value: "customer" },
+                    { label: "Merchant", value: "merchant" },
+                ]}
+                onChange={(value) => setForm((prev) => ({ ...prev, role: value }))}
             />
 
             <CustomButton

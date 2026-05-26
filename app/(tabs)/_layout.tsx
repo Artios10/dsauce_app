@@ -15,7 +15,7 @@ const TabBarIcon = ({ focused, icon, title }: TabBarIconProps) => (
 )
 
 export default function TabLayout() {
-    const { isAuthenticated } = useAuthStore();
+    const { isAuthenticated, user } = useAuthStore();
 
     if(!isAuthenticated) return <Redirect href="/sign-in" />
 
@@ -68,6 +68,15 @@ export default function TabLayout() {
                     tabBarIcon: ({ focused }) => <TabBarIcon title="Profile" icon={images.person} focused={focused} />
                 }}
             />
+            {user?.role === "admin" && (
+                <Tabs.Screen
+                    name='admin'
+                    options={{
+                        title: 'Admin',
+                        tabBarIcon: ({ focused }) => <TabBarIcon title="Admin" icon={images.user} focused={focused} />
+                    }}
+                />
+            )}
         </Tabs>
     );
 }

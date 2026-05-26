@@ -20,36 +20,53 @@ class Command(BaseCommand):
         admin.set_password('AdminPass123!')
         admin.save()
 
-        lecturer, _ = User.objects.get_or_create(email='lecturer@dsauce.app', defaults={'username': 'lecturer1', 'role': UserRole.LECTURER, 'is_verified': True})
-        lecturer.set_password('LecturerPass123!')
-        lecturer.save()
+        merchant, _ = User.objects.get_or_create(
+            email='merchant@dsauce.app',
+            defaults={'username': 'merchant1', 'role': UserRole.MERCHANT, 'is_verified': True},
+        )
+        merchant.set_password('MerchantPass123!')
+        merchant.save()
 
-        student, _ = User.objects.get_or_create(email='student@dsauce.app', defaults={'username': 'student1', 'role': UserRole.STUDENT, 'is_verified': True})
-        student.set_password('StudentPass123!')
-        student.save()
+        customer, _ = User.objects.get_or_create(
+            email='customer@dsauce.app',
+            defaults={'username': 'customer1', 'role': UserRole.CUSTOMER, 'is_verified': True},
+        )
+        customer.set_password('CustomerPass123!')
+        customer.save()
 
-        normal, _ = User.objects.get_or_create(email='user@dsauce.app', defaults={'username': 'user1', 'role': UserRole.NORMAL_USER, 'is_verified': True})
-        normal.set_password('UserPass123!')
-        normal.save()
-
-        FriendRequest.objects.get_or_create(sender=normal, receiver=student, defaults={'status': FriendRequestStatus.ACCEPTED, 'responded_at': timezone.now()})
-        first_id, second_id = Friendship.canonical_pair(normal.id, student.id)
+        FriendRequest.objects.get_or_create(
+            sender=customer,
+            receiver=merchant,
+            defaults={'status': FriendRequestStatus.ACCEPTED, 'responded_at': timezone.now()},
+        )
+        first_id, second_id = Friendship.canonical_pair(customer.id, merchant.id)
         Friendship.objects.get_or_create(requester_id=first_id, receiver_id=second_id)
 
-        post, _ = Post.objects.get_or_create(user=normal, content='Welcome to dsauce backend!')
-        PostLike.objects.get_or_create(post=post, user=student)
-        Comment.objects.get_or_create(post=post, user=student, content='Looks great!')
+        post, _ = Post.objects.get_or_create(user=customer, content='Welcome to dsauce backend!')
+        PostLike.objects.get_or_create(post=post, user=merchant)
+        Comment.objects.get_or_create(post=post, user=merchant, content='Looks great!')
 
-        course, _ = Course.objects.get_or_create(code='DSC-101', defaults={'lecturer': lecturer, 'title': 'Backend Fundamentals', 'description': 'Intro to backend architecture'})
-        CourseEnrollment.objects.get_or_create(course=course, student=student)
-        assignment, _ = Assignment.objects.get_or_create(course=course, title='API Basics', defaults={'created_by': lecturer, 'description': 'Build CRUD APIs', 'due_date': timezone.now() + timedelta(days=7)})
+        course, _ = Course.objects.get_or_create(
+            code='DSC-101',
+            defaults={'lecturer': merchant, 'title': 'Backend Fundamentals', 'description': 'Intro to backend architecture'},
+        )
+        CourseEnrollment.objects.get_or_create(course=course, student=customer)
+        assignment, _ = Assignment.objects.get_or_create(
+            course=course,
+            title='API Basics',
+            defaults={
+                'created_by': merchant,
+                'description': 'Build CRUD APIs',
+                'due_date': timezone.now() + timedelta(days=7),
+            },
+        )
 
-        conversation, _ = get_or_create_conversation(normal, [student.id])
-        Message.objects.get_or_create(conversation=conversation, sender=normal, content='Hello from seed data!')
+        conversation, _ = get_or_create_conversation(customer, [merchant.id])
+        Message.objects.get_or_create(conversation=conversation, sender=customer, content='Hello from seed data!')
 
         Notification.objects.get_or_create(
-            recipient=student,
-            actor=normal,
+            recipient=merchant,
+            actor=customer,
             notification_type='friend_request',
             title='Welcome notification',
             message='Sample notification from seed command.',
